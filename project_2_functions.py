@@ -13,23 +13,21 @@ def function1_hessian(x):
     return 2 * np.diag([(i + 1) for i in range(len(x))])
 
 
-A = np.loadtxt('func2_data/fun2_A.txt')
-b = np.loadtxt('func2_data/fun2_A.txt')
-c = np.loadtxt('func2_data/fun2_A.txt')
+b = np.loadtxt('func2_data/fun2_b.txt')
+c = np.loadtxt('func2_data/fun2_c.txt')
+with open('func2_data/fun2_A.txt', 'r') as file:
+    data = file.read().split()
+A = np.array(data, dtype=float).reshape(500, 100)
 
 
 def function2(x):
-    return c.T.dot(x) - np.sum(np.log(b - A.dot(x)))
-
+    return np.dot(c, x) - np.sum(np.nan_to_num(np.log(b - np.dot(A, x)), nan=0))
 
 def function2_gradient(x):
-    return c + A.T.dot(1 / (b - A.dot(x)))
-
+    return c + np.dot(A.T, 1 / (b - np.dot(A, x)))
 
 def function2_hessian(x):
-    return A.T.dot(np.diag(1 / ((b - A.dot(x)) ** 2))).dot(A)
-
-
+    return np.dot(np.dot(A.T, np.diag(1 / ((b - np.dot(A, x)) ** 2))), A)
 def function3(x):
     return 100 * (x[1] - x[0] ** 2) ** 2 + (1 - x[0]) ** 2
 
