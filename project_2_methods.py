@@ -43,15 +43,26 @@ def update_bfgs(y_k, s_k, b):
 def optimization_function(f_name, f, f_g, f_h, position, tolerance_f, tolerance_x, max_iteration=300):
     # Output x, f(x)
 
+    convergence_values = []
+    convergence_difference = []
+
     modulation = 0.1
     length_decrease = 0.5
     init_alpha = 1
 
     iterations = 0
     if f_name == 'DFP' or f_name == 'BFGS':
-        initial_c = np.eye(len(initial_position))
+        if position.ndim == 1:
+            rows, cols = 1, len(position)
+        else:
+            rows, cols = position.shape
+        initial_c = np.eye(cols)
+        print(initial_c.shape)
         c = initial_c
     print("\nMethod:", f_name)
+    convergence_values.append(f(position))
+    convergence_difference.append(f(position))
+
     while True:
         if (f_name == "Gradient Descent"):
             direction = gradient_descent(f_g, position)
@@ -77,23 +88,43 @@ def optimization_function(f_name, f, f_g, f_h, position, tolerance_f, tolerance_
             elif f_name == 'BFGS':
                 c = update_bfgs(y_k, s_k, c)
         iterations += 1
-        print(iterations, changed_position, abs(f(changed_position) - f(position_copy)), np.linalg.norm(changed_position - position_copy))
+        convergence_values.append(f(changed_position))
+
+        convergence_difference.append(abs(f(changed_position) - 0))
+        # print(convergence_difference)
         position = changed_position
-    return changed_position, f(changed_position)
+
+    print(iterations,changed_position, np.linalg.norm(changed_position - position_copy))
+
+    plt.plot(convergence_difference, label=f_name)
+    plt.plot([0, iterations], [0, 0], '--', label="Global Minimum")
+    plt.xlabel('Iterations')
+    plt.ylabel('Function Diff with Global Minimum = 0')
+    plt.legend()
+    plt.title('Convergence Plot')
+
+    plt.plot(convergence_values, label=f_name)
+    plt.plot([0, iterations], [0, 0], '--', label="Global Minimum")
+    plt.xlabel('Iterations')
+    plt.ylabel('Function Value')
+    plt.legend()
+    plt.title('Convergence Plot')
+    plt.show()
 
 
-initial_position = np.full(100, 50)
+initial_position = np.full(100, 10)
 optimization_function("Gradient Descent",function1, function1_gradient, function1_hessian, initial_position, 0.0001, 0.0001, 300)
 optimization_function("Newton",function1, function1_gradient, function1_hessian, initial_position, 0.0001, 0.0001, 300)
 optimization_function("BFGS",function1, function1_gradient, function1_hessian, initial_position, 0.0001, 0.0001, 300)
 
+#
+initial_position =  np.full(100, 14)
+optimization_function("Gradient Descent",function2, function2_gradient, function2_hessian, initial_position,0.0001 , 0.0001, 300)
+optimization_function("Newton",function2, function2_gradient, function2_hessian, initial_position, 0.0001, 0.0001, 300)
+optimization_function("BFGS",function2, function2_gradient, function2_hessian, initial_position, 0.0001, 0.0001, 300)
+#
 
-initial_position = np.array([10, 10])
-optimization_function("Gradient Descent",function3, function3_gradient, function3_hessian, initial_position, 0.0001, 0.0001, 300)
-optimization_function("Newton",function3, function3_gradient, function3_hessian, initial_position, 0.0001, 0.0001, 300)
-optimization_function("BFGS",function3, function3_gradient, function3_hessian, initial_position, 0.0001, 0.0001, 300)
-
-
-# optimization_function("Gradient Descent",function2, function2_gradient, function2_hessian, initial_position, 0.0001, 0.0001, 300)
-# optimization_function("Newton",function2, function2_gradient, function2_hessian, initial_position, 0.0001, 0.0001, 300)
-# optimization_function("BFGS",function2, function2_gradient, function2_hessian, initial_position, 0.0001, 0.0001, 300)
+initial_position = np.array([1, 3])
+optimization_function("Gradient Descent",function3, function3_gradient, function3_hessian, initial_position, 0.001, 0.0001, 300)
+optimization_function("Newton",function3, function3_gradient, function3_hessian, initial_position, 0.001, 0.0001, 300)
+optimization_function("BFGS",function3, function3_gradient, function3_hessian, initial_position, 0.001, 0.0001, 300)
