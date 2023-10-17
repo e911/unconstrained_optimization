@@ -32,7 +32,7 @@ def simulated_annealing(title, f, initial_position):
     plt.ylabel('Change in function')
     plt.show()
 
-    return changed_position, f(changed_position)
+    return changed_position, f(changed_position), iteration
 
 
 def acceptance_probability(old_value, changed_value, temperature):
@@ -43,17 +43,20 @@ def acceptance_probability(old_value, changed_value, temperature):
 
 
 initial_position = np.full(100, 2)
-position, value = simulated_annealing("Func1", function1, initial_position)
+position, value, iteration = simulated_annealing("Simulated Annealing Func1", function1, initial_position)
 print("Best position found for func 1:", position)
 print("Best value found for func 1:", value)
+print("Iteration: ", iteration)
 
 initial_position = np.full(100, 10)
-position, value = simulated_annealing("Func2", function2, initial_position)
+position, value, iteration = simulated_annealing("Simulated Annealing Func2", function2, initial_position)
 print("Best position found for func 2:", position)
 print("Best value found for func 2:", value)
+print("Iteration: ", iteration)
 
 initial_position = np.array([1, 3])
-position, value = simulated_annealing("Func3", function3, initial_position)
+position, value, iteration = simulated_annealing("Simulated Annealing Func3", function3, initial_position)
 print("Best position found for func 3:", position)
 print("Best value found for func 3:", value)
+print("Iteration: ", iteration)
 

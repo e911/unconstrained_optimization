@@ -6,12 +6,8 @@
   pip install -r requirements.txt
 ```
 
-2. Run the program for each methods. (Make sure python3.* is installed on your machine)
+2. Run the program for simulated annealing for each method. (Make sure python3.* is installed on your machine)
  
 ```bash
-python src/gd_newton.py
-```
-
-```bash
-python src/quasi_newton.py
+python simulated_annealing.py
 ```
